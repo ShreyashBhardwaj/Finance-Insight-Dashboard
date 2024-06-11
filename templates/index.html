@@ -5,7 +5,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Screener Clone</title>
+    <title>Finance Insight Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 
     <link
@@ -18,9 +18,6 @@
         <ul>
           <li><a href="#">Home</a></li>
           <li><a href="#">Screens</a></li>
-          <li>
-            <a href="#">Tools <i class="fas fa-caret-down"></i></a>
-          </li>
         </ul>
         <div class="auth-buttons">
           <button class="login-button">Login</button>
@@ -30,7 +27,7 @@
     <main>
       <div class="container">
         <h1>
-          <span class="logo">screener</span><span class="logo-icon">.in</span>
+          <span class="logo">Finance Insight </span><span class="logo-icon">Dashboard</span>
         </h1>
         <p>Stock analysis and screening tool for investors in India.</p>
 
@@ -38,31 +35,26 @@
           <input type="text" placeholder="Search for a company" />
           <button>Search</button>
         </div>
-        <p>Or analyse:</p>
+        <p class="show">Searching for This</p>
         <div class="suggestions">
+          
+        </div>
+        <!-- <p>Or analyse:</p>
+        <div class="suggestions1">
           <button>Asian Paints</button>
           <button>ITC</button>
           <button>Tata Steel</button>
           <button>Infosys</button>
-        </div>
+        </div> -->
       </div>
     </main>
     <footer>
       <div class="footer-container">
         <div class="footer-section">
-          <h2>screener.in</h2>
-        </div>
-        <div class="footer-section">
-          <h3>Theme</h3>
-          <ul>
-            <li><button id="light-mode">Light</button></li>
-            <li><button id="dark-mode">Dark</button></li>
-            <li><button id="auto-mode">Auto</button></li>
-          </ul>
+          <h2>Made By Shreyash Bhardwaj</h2>
         </div>
       </div>
     </footer>
   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/darkmode.js') }}"></script>
   </body>
 </html>

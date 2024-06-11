@@ -4,6 +4,7 @@ body {
     margin: 0;
     padding: 0;
     color: #333;
+    box-sizing: border-box;
 }
 
 header {
@@ -62,8 +63,9 @@ nav ul li a {
 .container {
     text-align: center;
     margin: 50px auto;
-    padding: 95px 0;
+    padding: 85px 0;
     max-width: 600px;
+    height: 37vh;
 }
 
 .logo {
@@ -122,6 +124,25 @@ nav ul li a {
 .suggestions button:hover {
     background-color: #f0f0f0;
 }
+.suggestions1 {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.suggestions1 button {
+    border: 2px solid #ccc;
+    background: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.suggestions1 button:hover {
+    background-color: #f0f0f0;
+}
 
 footer {
     background-color: #fff;
@@ -152,6 +173,8 @@ footer {
     list-style-type: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    align-items: c;
 }
 
 .footer-section ul li {

@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, render_template, send_from_directory
 from flask_cors import CORS
 import mysql.connector
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -12,6 +13,16 @@ db = mysql.connector.connect(
     password='sanat123',
     database='test_schema'
 )
+
+# Define paths to static and template folders
+static_folder = os.path.abspath('E:\\PROGRAMS AND PROJECTS\\Finance Insights Dashboard\\static')
+template_folder = os.path.abspath('E:\\PROGRAMS AND PROJECTS\\Finance Insights Dashboard\\templates')
+
+# Configure Flask to serve static files
+app.static_folder = static_folder
+
+# Configure Flask to use templates folder
+app.template_folder = template_folder
 
 
 @app.route('/search')
@@ -30,8 +41,7 @@ def search():
 
 @app.route('/')
 def index():
-    return send_from_directory('E:\\PROGRAMS AND PROJECTS\\Finance Insights Dashboard\\Website',
-                               'index.html')
+    return render_template('index.html')
 
 
 if __name__ == '__main__':

@@ -37,7 +37,15 @@ document.addEventListener('DOMContentLoaded', () => {
         companies.forEach(company => {
             const button = document.createElement('button');
             button.textContent = company.name;
+            button.addEventListener('click', () => {
+                navigateToDashboard(company.name);
+            });
             suggestionsContainer.appendChild(button);
         });
+    }
+
+    function navigateToDashboard(companyName) {
+        // Redirect to dashboard.html with company name as a query parameter
+        window.location.href = `dashboard.html?company=${encodeURIComponent(companyName)}`;
     }
 });
