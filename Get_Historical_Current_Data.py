@@ -102,3 +102,4 @@ for symbol in nifty_50_symbols:
             print(f"Error saving data to MySQL for {symbol}: {e}")
     else:
         print(f"Failed to retrieve stock data for {symbol}")
+#

@@ -69,3 +69,4 @@ for symbol in nifty_50_symbols:
 
 # Close the database connection
 db.close()
+#

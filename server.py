@@ -57,7 +57,7 @@ def dashboard():
     cursor = db.cursor(dictionary=True)
 
     # Example queries to fetch data from the database based on company_name
-    cursor.execute("SELECT * FROM companies WHERE name = %s", (company_name,))
+    cursor.execute("SELECT * FROM CurrentStockData WHERE company_name = %s", (company_name,))
     company_data = cursor.fetchone()  # Assuming we expect only one row
 
     cursor.execute("SELECT * FROM HistoricalStockData WHERE company_name = %s", (company_name,))
@@ -66,7 +66,7 @@ def dashboard():
     cursor.execute("SELECT * FROM quarterly_income_statement WHERE company_name = %s", (company_name,))
     quarterly_results = cursor.fetchall()
 
-    cursor.execute("SELECT * FROM income_statement WHERE company_name = %s", (company_name,))
+    cursor.execute("SELECT * FROM yearly_income_statement WHERE company_name = %s", (company_name,))
     income_statement = cursor.fetchall()
 
     cursor.execute("SELECT * FROM balance_sheet WHERE company_name = %s", (company_name,))
