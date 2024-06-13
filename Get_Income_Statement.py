@@ -14,9 +14,10 @@ db = mysql.connector.connect(
 def get_income_statement(symbol):
     try:
         stock = yf.Ticker(symbol)
-        income_stmt = stock.quarterly_financials
-        if not income_stmt.empty:
-            return income_stmt.to_dict()
+        quaterly_income_stmt = stock.quarterly_financials
+        income_stmt1=stock.income_stmt
+        if not quaterly_income_stmt.empty:
+            return quaterly_income_stmt.to_dict()
         else:
             print(f"No income statement data available for {symbol}")
             return None

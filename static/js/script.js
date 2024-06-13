@@ -4,24 +4,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const suggestionsContainer = document.querySelector('.suggestions');
 
     searchButton.addEventListener('click', () => {
-        const query = searchInput.value;
+        const query = searchInput.value.trim(); // Trim whitespace from input
         if (query) {
             fetchCompanies(query);
+        } else {
+            suggestionsContainer.innerHTML = ''; // Clear suggestions if input is empty
         }
     });
 
     searchInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
-            const query = searchInput.value;
+            const query = searchInput.value.trim(); // Trim whitespace from input
             if (query) {
                 fetchCompanies(query);
+            } else {
+                suggestionsContainer.innerHTML = ''; // Clear suggestions if input is empty
             }
         }
     });
 
     async function fetchCompanies(query) {
         try {
-            const response = await fetch(`http://localhost:5000/search?q=${encodeURIComponent(query)}`);
+            const response = await fetch(`/search?q=${encodeURIComponent(query)}`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -45,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function navigateToDashboard(companyName) {
-        // Redirect to dashboard.html with company name as a query parameter
-        window.location.href = `dashboard.html?company=${encodeURIComponent(companyName)}`;
+        // Redirect to Flask route for dashboard with company name as query parameter
+        window.location.href = `/dashboard?company=${encodeURIComponent(companyName)}`;
     }
 });
