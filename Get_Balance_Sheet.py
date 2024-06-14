@@ -23,21 +23,48 @@ def get_balance_sheet(symbol):
         print(f"Error fetching balance sheet data for {symbol}: {e}")
         return None
 
-# Function to insert balance sheet data into the database
-def insert_balance_sheet_data(symbol, data):
+# Function to fetch company name based on symbol
+def get_company_name(symbol):
+    cursor = db.cursor()
+    cursor.execute("SELECT name FROM companies WHERE ticker = %s", (symbol,))
+    result = cursor.fetchone()
+    cursor.close()
+    if result:
+        return result[0]  # Return the company name
+    else:
+        return None  # Handle case where symbol does not exist in database
+
+# Function to insert or update balance sheet data into the database
+def insert_or_update_balance_sheet_data(symbol, company_name, data):
     cursor = db.cursor()
     for fiscal_year, metrics in data.items():
         fiscal_year = fiscal_year.year  # Directly extract the year from the Timestamp
         sql = """
             INSERT INTO balance_sheet 
-            (symbol, fiscal_year, total_assets, total_liabilities, total_equity, current_assets, 
+            (symbol, company_name, fiscal_year, total_assets, total_liabilities, total_equity, current_assets, 
             current_liabilities, long_term_debt, short_term_debt, retained_earnings, net_income, 
             total_revenue, operating_income, net_cash_provided_by_operating_activities, 
             net_cash_used_for_investing_activities, net_cash_used_for_financing_activities)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE
+            company_name = VALUES(company_name),
+            total_assets = VALUES(total_assets),
+            total_liabilities = VALUES(total_liabilities),
+            total_equity = VALUES(total_equity),
+            current_assets = VALUES(current_assets),
+            current_liabilities = VALUES(current_liabilities),
+            long_term_debt = VALUES(long_term_debt),
+            short_term_debt = VALUES(short_term_debt),
+            retained_earnings = VALUES(retained_earnings),
+            net_income = VALUES(net_income),
+            total_revenue = VALUES(total_revenue),
+            operating_income = VALUES(operating_income),
+            net_cash_provided_by_operating_activities = VALUES(net_cash_provided_by_operating_activities),
+            net_cash_used_for_investing_activities = VALUES(net_cash_used_for_investing_activities),
+            net_cash_used_for_financing_activities = VALUES(net_cash_used_for_financing_activities)
         """
         values = (
-            symbol, fiscal_year,
+            symbol, company_name, fiscal_year,
             float(metrics.get('Total Assets', 0)),
             float(metrics.get('Total Liabilities Net Minority Interest', 0)),
             float(metrics.get('Total Equity Gross Minority Interest', 0)),
@@ -71,14 +98,17 @@ nifty_50_symbols = [
     "EICHERMOT.NS", "DIVISLAB.NS", "HINDALCO.NS", "UPL.NS", "APOLLOHOSP.NS"
 ]
 
-# Fetch and insert data for each symbol
+# Fetch and insert or update data for each symbol
 for symbol in nifty_50_symbols:
-    balance_sheet_data = get_balance_sheet(symbol)
-    if balance_sheet_data is not None:
-        insert_balance_sheet_data(symbol, balance_sheet_data)
+    company_name = get_company_name(symbol)
+    if company_name:
+        balance_sheet_data = get_balance_sheet(symbol)
+        if balance_sheet_data is not None:
+            insert_or_update_balance_sheet_data(symbol, company_name, balance_sheet_data)
+        else:
+            print(f"No data to save for {symbol}")
     else:
-        print(f"No data to save for {symbol}")
+        print(f"No company name found for symbol {symbol}")
 
 # Close the database connection
 db.close()
-#

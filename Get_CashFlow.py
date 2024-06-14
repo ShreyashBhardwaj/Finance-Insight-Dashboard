@@ -23,19 +23,36 @@ def get_cash_flow(symbol):
         print(f"Error fetching cash flow data for {symbol}: {e}")
         return None
 
-# Function to insert cash flow data into the database
-def insert_cash_flow_data(symbol, data):
+# Function to fetch company name based on symbol
+def get_company_name(symbol):
+    cursor = db.cursor()
+    cursor.execute("SELECT name FROM companies WHERE ticker = %s", (symbol,))
+    result = cursor.fetchone()
+    cursor.close()
+    if result:
+        return result[0]  # Return the company name
+    else:
+        return None  # Handle case where symbol does not exist in database
+
+# Function to insert or update cash flow data into the database
+def insert_or_update_cash_flow_data(symbol, company_name, data):
     cursor = db.cursor()
     for fiscal_year, metrics in data.items():
         fiscal_year = fiscal_year.year  # Directly extract the year from the Timestamp
         sql = """
             INSERT INTO cash_flow 
-            (symbol, fiscal_year, net_cash_provided_by_operating_activities, net_cash_used_for_investing_activities, 
+            (symbol, company_name, fiscal_year, net_cash_provided_by_operating_activities, net_cash_used_for_investing_activities, 
             net_cash_used_for_financing_activities, change_in_cash_and_cash_equivalents)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE
+            company_name = VALUES(company_name),
+            net_cash_provided_by_operating_activities = VALUES(net_cash_provided_by_operating_activities),
+            net_cash_used_for_investing_activities = VALUES(net_cash_used_for_investing_activities),
+            net_cash_used_for_financing_activities = VALUES(net_cash_used_for_financing_activities),
+            change_in_cash_and_cash_equivalents = VALUES(change_in_cash_and_cash_equivalents)
         """
         values = (
-            symbol, fiscal_year,
+            symbol, company_name, fiscal_year,
             float(metrics.get('Net Cash Provided By Operating Activities', 0)),
             float(metrics.get('Net Cash Used For Investing Activities', 0)),
             float(metrics.get('Net Cash Used For Financing Activities', 0)),
@@ -59,14 +76,17 @@ nifty_50_symbols = [
     "EICHERMOT.NS", "DIVISLAB.NS", "HINDALCO.NS", "UPL.NS", "APOLLOHOSP.NS"
 ]
 
-# Fetch and insert data for each symbol
+# Fetch and insert or update data for each symbol
 for symbol in nifty_50_symbols:
-    cash_flow_data = get_cash_flow(symbol)
-    if cash_flow_data is not None:
-        insert_cash_flow_data(symbol, cash_flow_data)
+    company_name = get_company_name(symbol)
+    if company_name:
+        cash_flow_data = get_cash_flow(symbol)
+        if cash_flow_data is not None:
+            insert_or_update_cash_flow_data(symbol, company_name, cash_flow_data)
+        else:
+            print(f"No data to save for {symbol}")
     else:
-        print(f"No data to save for {symbol}")
+        print(f"No company name found for symbol {symbol}")
 
 # Close the database connection
 db.close()
-#

@@ -53,40 +53,48 @@ def index():
 def dashboard():
     company_name = request.args.get('company')
 
-    # Fetch data for the dashboard from the database (example)
+    if not company_name:
+        return "Company name is required", 400
+
     cursor = db.cursor(dictionary=True)
 
-    # Example queries to fetch data from the database based on company_name
+    # Fetch current stock data
     cursor.execute("SELECT * FROM CurrentStockData WHERE company_name = %s", (company_name,))
-    company_data = cursor.fetchone()  # Assuming we expect only one row
+    company_data = cursor.fetchone()
 
+    # Fetch historical stock data
     cursor.execute("SELECT * FROM HistoricalStockData WHERE company_name = %s", (company_name,))
     historical_data = cursor.fetchall()
 
+    # Fetch quarterly income statement
     cursor.execute("SELECT * FROM quarterly_income_statement WHERE company_name = %s", (company_name,))
     quarterly_results = cursor.fetchall()
 
+    # Fetch yearly income statement
     cursor.execute("SELECT * FROM yearly_income_statement WHERE company_name = %s", (company_name,))
     income_statement = cursor.fetchall()
 
+    # Fetch balance sheet data
     cursor.execute("SELECT * FROM balance_sheet WHERE company_name = %s", (company_name,))
     balance_sheet = cursor.fetchall()
 
+    # Fetch cash flow data
     cursor.execute("SELECT * FROM cash_flow WHERE company_name = %s", (company_name,))
     cash_flow = cursor.fetchall()
 
     cursor.close()
 
-    # Render dashboard.html with data
-    return render_template('dashboard.html',
-                           company_name=company_name,
-                           company_data=company_data,
-                           historical_data=historical_data,
-                           quarterly_results=quarterly_results,
-                           income_statement=income_statement,
-                           balance_sheet=balance_sheet,
-                           cash_flow=cash_flow)
+    # Prepare the response
+    data = {
+        'company_data': company_data,
+        'historical_data': historical_data,
+        'quarterly_results': quarterly_results,
+        'income_statement': income_statement,
+        'balance_sheet': balance_sheet,
+        'cash_flow': cash_flow
+    }
 
+    return jsonify(data)
 
 # Scheduler tasks
 def run_task(script_name):
