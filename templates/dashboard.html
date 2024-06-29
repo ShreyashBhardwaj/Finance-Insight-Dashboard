@@ -5,29 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 </head>
 <body>
-  <div class="currentdata">
-    <h3 class="compnayname"></h3>
-    <div class="cd">
-      <p class="marketcap"></p>
-      <p class="forwardPE"></p>
-      <p class="trailingPE"></p>
-      <p class="daylow"></p>
-      <p class="dayhigh"></p>
+    <div class="currentdata">
+        <h3 class="companyname">{{ data.company_data.company_name }}</h3>
+        <div class="cd">
+            <p class="marketcap">Market Cap: {{ data.company_data.marketCap }}</p>
+            <p class="forwardPE">Forward P/E: {{ data.company_data.forwardPE }}</p>
+            <p class="trailingPE">Trailing P/E: {{ data.company_data.trailingPE }}</p>
+            <p class="daylow">Day Low: {{ data.company_data.dayLow }}</p>
+            <p class="dayhigh">Day High: {{ data.company_data.dayHigh }}</p>
+        </div>
     </div>
-  </div>
-  <div class="map"></div>  
-  <div class="historicaldata"></div>
-  <div class="quarterlyresult"></div>
-  <div class="oncomestmt"></div>
-  <div class="balancesheet"></div>
-  <div class="cashflow"></div>
-
-  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    
+    <div class="historicaldata">
+        <h3>Historical Data</h3>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Open Price</th>
+                <th>High Price</th>
+                <th>Low Price</th>
+                <th>Close Price</th>
+                <th>Volume</th>
+            </tr>
+            {% for item in data.historical_data %}
+            <tr>
+                <td>{{ item.date_time }}</td>
+                <td>{{ item.Open }}</td>
+                <td>{{ item.High }}</td>
+                <td>{{ item.Low }}</td>
+                <td>{{ item.Close }}</td>
+                <td>{{ item.Volume }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    
+    <div class="quarterlyresult">
+        <h3>Quarterly Results</h3>
+        <table>
+            <tr>
+                <th>Quarter</th>
+                <th>Revenue</th>
+                <th>Profit</th>
+            </tr>
+            {% for item in data.quarterly_results %}
+            <tr>
+                <td>{{ item.fiscal_period }}</td>
+                <td>{{ item.total_revenue }}</td>
+                <td>{{ item.net_income }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    
+    <div class="incomestmt">
+        <h3>Income Statement</h3>
+        <table>
+            <tr>
+                <th>Year</th>
+                <th>Revenue</th>
+                <th>Income</th>
+                <th>Expenses</th>
+            </tr>
+            {% for item in data.income_statement %}
+            <tr>
+                <td>{{ item.fiscal_period }}</td>
+                <td>{{ item.total_revenue }}</td>
+                <td>{{ item.net_income}}</td>
+                <td>{{ item.interest_expense }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    
+    <div class="balancesheet">
+        <h3>Balance Sheet</h3>
+        <table>
+            <tr>
+                <th>Year</th>
+                <th>Assets</th>
+                <th>Liabilities</th>
+            </tr>
+            {% for item in data.balance_sheet %}
+            <tr>
+                <td>{{ item.fiscal_year }}</td>
+                <td>{{ item.total_assets }}</td>
+                <td>{{ item.total_liabilities }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    
+    <div class="cashflow">
+        <h3>Cash Flow</h3>
+        <table>
+            <tr>
+                <th>Year</th>
+                <th>Operating Cash Flow</th>
+                <th>Free Cash Flow</th>
+            </tr>
+            {% for item in data.cash_flow %}
+            <tr>
+                <td>{{ item.fiscal_year }}</td>
+                <td>{{ item.operating_cash_flow }}</td>
+                <td>{{ item.free_cash_flow }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </body>
 </html>

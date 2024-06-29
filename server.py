@@ -61,30 +61,36 @@ def dashboard():
     # Fetch current stock data
     cursor.execute("SELECT * FROM CurrentStockData WHERE company_name = %s", (company_name,))
     company_data = cursor.fetchone()
+    print("Current Stock Data:", company_data)  # Print to verify
 
     # Fetch historical stock data
     cursor.execute("SELECT * FROM HistoricalStockData WHERE company_name = %s", (company_name,))
     historical_data = cursor.fetchall()
+    print("Historical Data:", historical_data)  # Print to verify
 
     # Fetch quarterly income statement
     cursor.execute("SELECT * FROM quarterly_income_statement WHERE company_name = %s", (company_name,))
     quarterly_results = cursor.fetchall()
+    print("Quarterly Results:", quarterly_results)  # Print to verify
 
     # Fetch yearly income statement
     cursor.execute("SELECT * FROM yearly_income_statement WHERE company_name = %s", (company_name,))
     income_statement = cursor.fetchall()
+    print("Income Statement:", income_statement)  # Print to verify
 
     # Fetch balance sheet data
     cursor.execute("SELECT * FROM balance_sheet WHERE company_name = %s", (company_name,))
     balance_sheet = cursor.fetchall()
+    print("Balance Sheet:", balance_sheet)  # Print to verify
 
     # Fetch cash flow data
     cursor.execute("SELECT * FROM cash_flow WHERE company_name = %s", (company_name,))
     cash_flow = cursor.fetchall()
+    print("Cash Flow:", cash_flow)  # Print to verify
 
     cursor.close()
 
-    # Prepare the response
+    # Prepare the data
     data = {
         'company_data': company_data,
         'historical_data': historical_data,
@@ -94,8 +100,7 @@ def dashboard():
         'cash_flow': cash_flow
     }
 
-    return jsonify(data)
-
+    return render_template('dashboard.html', data=data)
 # Scheduler tasks
 def run_task(script_name):
     try:
